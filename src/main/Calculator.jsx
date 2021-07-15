@@ -37,10 +37,22 @@ export default class Calculator extends Component {
 
       const values = [...this.state.values]
 
-      try {
-        values[0] = eval(`${values[0]} ${currentOperation} ${values[1]}`)
-      } catch {
-        values[0] = this.state.values[0]
+      switch (currentOperation) {
+        case '+':
+          values[0] = values[0] + values[1]
+          break
+        case '-':
+          values[0] = values[0] - values[1]
+          break
+        case '*':
+          values[0] = values[0] * values[1]
+          break
+        case '/':
+          values[0] = values[0] / values[1]
+          break
+        default:
+          values[0] = this.state.values[0]
+          break
       }
       values[1] = 0
 
@@ -56,7 +68,6 @@ export default class Calculator extends Component {
   }
 
   addDigit(digit) {
-
     //Regra para não permitir colocar o ponto de casas decimais mais de uma vez
     if (digit === '.' && this.state.displayValue.includes('.')) {
       return
