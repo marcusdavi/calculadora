@@ -24,6 +24,40 @@ export default class Calculator extends Component {
     this.addDigit = this.addDigit.bind(this)
   }
 
+  calculateValues(values, operation) {
+    switch (operation) {
+      case '+':
+        values[0] = values[0] + values[1]
+        break
+      case '-':
+        values[0] = values[0] - values[1]
+        break
+      case '*':
+        values[0] = values[0] * values[1]
+        break
+      case '/':
+        values[0] = values[0] / values[1]
+        break
+      default:
+        values[0] = this.state.values[0]
+        break
+    }
+    values[1] = 0
+
+    return values
+
+  }
+
+  finishOperation(values, equals, operation) {
+    this.setState({
+      displayValue: values[0],
+      operation: equals ? null : operation,
+      current: equals ? 0 : 1,
+      clearDisplay: !equals,
+      values
+    })
+  }
+
   clearMemory() {
     this.setState({ ...initialState })
   }
@@ -33,36 +67,8 @@ export default class Calculator extends Component {
       this.setState({ operation, current: 1, clearDisplay: true })
     } else {
       const equals = operation === '='
-      const currentOperation = this.state.operation
-
-      const values = [...this.state.values]
-
-      switch (currentOperation) {
-        case '+':
-          values[0] = values[0] + values[1]
-          break
-        case '-':
-          values[0] = values[0] - values[1]
-          break
-        case '*':
-          values[0] = values[0] * values[1]
-          break
-        case '/':
-          values[0] = values[0] / values[1]
-          break
-        default:
-          values[0] = this.state.values[0]
-          break
-      }
-      values[1] = 0
-
-      this.setState({
-        displayValue: values[0],
-        operation: equals ? null : operation,
-        current: equals ? 0 : 1,
-        clearDisplay: !equals,
-        values
-      })
+      const values = this.calculateValues([...this.state.values], this.state.operation)
+      this.finishOperation(values, equals, operation)
 
     }
   }
